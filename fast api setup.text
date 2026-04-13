@@ -1,0 +1,51 @@
+Step 01: cd "project_directory/...."                                          # -----------------------
+Step 02: python -m venv .venv                                                 # Optional in second time
+Step 03: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional in second time
+Step 03: .venv\Scripts\activate                                               # -----------------------
+Step 04: pip install fastapi uvicorn jinja2                                   # Optional in second time  
+Step 05: $folders = "static", "templates"; $files = "main.py", "templates/index.html"; foreach ($f in $folders) { if (!(Test-Path $f)) { New-Item -ItemType Directory $f } }; foreach ($file in $files) { if (!(Test-Path $file)) { New-Item -ItemType File $file } } 
+Step 06: pip freeze > requirements.txt                                        # Optional in second time
+Step 07: Template of main.py file that need additional functionalities according to App necessity
+
+@"
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
+app       = FastAPI(title="My API")
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse(request = request, name="index.html")
+"@ | Set-Content main.py
+
+Step 08: Template of index.html file to best of app user interface
+
+@"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My FastAPI App</title>
+</head>
+<body>
+    <p>Modify the Content of the body for the app necessity</p>
+</body>
+</html>
+"@ | Set-Content templates/index.html
+
+step 09: uvicorn main:app --reload
+
+
+
+
+
+
+
+
+
+Step 05: $folders = "static/css", "static/js", "templates"; $files = "main.py", "static/css/style.css", "static/js/script.js", "templates/index.html", "templates/base.html"; foreach ($f in $folders) { if (!(Test-Path $f)) { New-Item -ItemType Directory $f } }; foreach ($file in $files) { if (!(Test-Path $file)) { New-Item -ItemType File $file } } 
+
